@@ -1,5 +1,7 @@
+version: "3.8"
+
 services:
-  api: &main_app
+  api:
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -12,21 +14,20 @@ services:
     env_file:
       - .env
     labels:
-      # Enables traefik for this container.
+      # Enable traefik for this container
       - traefik.enable=true
       - traefik.http.routers.app.rule=Host(`${APP_TRAEFIK_HOST:-app.localhost}`)
       - traefik.http.routers.app.entrypoints=http
       - traefik.http.routers.app.service=app
-      - traefik.http.services.app.loadbalancer.server.port=${APP_PORT:-8000}
+      - traefik.http.services.app.loadbalancer.server.port=8000
     networks:
-      - default
       - traefik-shared
     depends_on:
       db:
         condition: service_healthy
     environment:
       APP_HOST: ${APP_HOST:-0.0.0.0}
-      APP_DB_HOST: ${APP_DB_HOST:-app-db}
+      APP_DB_HOST: ${APP_DB_HOST:-db}
       APP_DB_PORT: ${APP_DB_PORT:-5432}
       APP_DB_USER: ${APP_DB_USER:-app}
       APP_DB_PASS: ${APP_DB_PASS:-app}
@@ -34,25 +35,24 @@ services:
 
   db:
     image: postgres:16.3-bullseye
-    hostname: ${APP_DB_HOST_NAME:-app-db}
+    hostname: ${APP_DB_HOST_NAME:-db}
     environment:
       POSTGRES_USER: ${APP_DB_USER:-app}
       POSTGRES_PASSWORD: ${APP_DB_PASS:-app}
       POSTGRES_DB: ${APP_DB_BASE:-app}
     volumes:
-      - app-db-data:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql/data
     restart: always
     healthcheck:
-      test: pg_isready -U app
-      interval: 2s
-      timeout: 3s
-      retries: 40
+      test: ["CMD-SHELL", "pg_isready -U ${APP_DB_USER:-app}"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
 
 volumes:
-  app-db-data:
-    name: app-db-data
+  db-data:
+    name: db-data
 
 networks:
-  # Network for traefik.
   traefik-shared:
     name: traefik-shared

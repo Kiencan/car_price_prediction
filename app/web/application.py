@@ -6,7 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from app.core.settings import settings
 from app.utils.log_utils import configure_logging
 from app.web.api.router import api_router
-from app.web.lifespan import lifespan_setup
+# from app.web.lifespan import lifespan_setup
 
 
 def get_app() -> FastAPI:
@@ -22,7 +22,7 @@ def get_app() -> FastAPI:
         title=settings.title,
         version=settings.version,
         description=settings.description,
-        lifespan=lifespan_setup,
+        # lifespan=lifespan_setup,
         docs_url="/api/docs",
         redoc_url="/api/redoc",
         openapi_url="/api/openapi.json",
@@ -57,3 +57,7 @@ def get_app() -> FastAPI:
         name="media",
     )
     return app
+
+app = get_app()
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)

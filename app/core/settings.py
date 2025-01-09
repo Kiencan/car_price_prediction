@@ -43,32 +43,32 @@ class Settings(BaseSettings):
 
     log_level: LogLevel = LogLevel.INFO
     # Variables for the database
-    db_host: str = "localhost"
-    db_host_name: str = "localhost"
-    db_port: int = 5432
-    db_user: str = "app"
-    db_pass: str = "app"
-    db_base: str = "admin"
-    db_echo: bool = False
+    # db_host: str = "localhost"
+    # db_host_name: str = "localhost"
+    # db_port: int = 5432
+    # db_user: str = "app"
+    # db_pass: str = "app"
+    # db_base: str = "admin"
+    # db_echo: bool = False
 
     # Path to the directory with media
     media_dir: str = "media"
 
-    @property
-    def db_url(self) -> URL:
-        """
-        Assemble database URL from settings.
+    # @property
+    # def db_url(self) -> URL:
+    #     """
+    #     Assemble database URL from settings.
 
-        :return: database URL.
-        """
-        return URL.build(
-            scheme="postgresql+asyncpg",
-            host=self.db_host,
-            port=self.db_port,
-            user=self.db_user,
-            password=self.db_pass,
-            path=f"/{self.db_base}",
-        )
+    #     :return: database URL.
+    #     """
+    #     return URL.build(
+    #         scheme="postgresql+asyncpg",
+    #         host=self.db_host,
+    #         port=self.db_port,
+    #         user=self.db_user,
+    #         password=self.db_pass,
+    #         path=f"/{self.db_base}",
+    #     )
 
     @property
     def media_dir_static(self) -> Path:
@@ -93,11 +93,11 @@ class Settings(BaseSettings):
             return f"{self.domain}/static/media"
         return f"http://{self.host}:{self.port}/static/media"
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="APP_",
-        env_file_encoding="utf-8",
-    )
+    # model_config = SettingsConfigDict(
+    #     env_file=".env",
+    #     env_prefix="APP_",
+    #     env_file_encoding="utf-8",
+    # )
 
 
 settings = Settings()
